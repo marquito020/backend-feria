@@ -16,11 +16,11 @@ const addConsulta = async (consulta) => {
     const PanelFound = await PanelModel.findById({ _id: idPanel });
     const BatteryFound = await BatteryModel.findById({ _id: idBattery });
     const InverterFound = await InverterModel.findById({ _id: idInverter });
-    const cantidadPaneles = Math.ceil(((consumoAnual / 12) / 30) / PanelFound.potenciaMaximaW);
+    const cantidadPaneles = Math.ceil(((consumoAnual / 12) / 30) / ((PanelFound.potenciaMaximaW / 1000) * 12));
     console.log("Cantidad de paneles: " + cantidadPaneles);
     const potenciaNecesaria = consumoMensual / BatteryFound.voltaje;
     console.log("Potencia necesaria: " + potenciaNecesaria);
-    const cantidadBaterias = Math.ceil((potenciaNecesaria / BatteryFound.capacidadAh) / BatteryFound.capacidadAh);
+    const cantidadBaterias = Math.ceil((potenciaNecesaria / BatteryFound.capacidadAh) /* / BatteryFound!.capacidadAh */);
     console.log("Cantidad de baterias: " + cantidadBaterias);
     const potenciaTotalPaneles = cantidadPaneles * PanelFound.potenciaMaximaW;
     console.log("Potencia total de paneles: " + potenciaTotalPaneles);
@@ -37,7 +37,7 @@ const addConsulta = async (consulta) => {
     console.log("Calculo de ahorro potencial_2: ", (5 * (30 * (4 * (consumoHr * 0.5)))));
     console.log("Calculo de ahorro potencial_3: ", (7 * (precioConsumoMensual)));
     console.log("Ahorro potencial: " + ahorroPotencial);
-    const tiempoRecuperacion = (ahorroPotencial / precioTotal).toFixed(2);
+    const tiempoRecuperacion = (precioTotal / ahorroPotencial).toFixed(2);
     console.log("Tiempo de recuperacion: " + tiempoRecuperacion);
     const newConsulta = new ConsultaModel({
         idUser: consulta.idUser,
